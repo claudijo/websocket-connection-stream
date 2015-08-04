@@ -1,0 +1,30 @@
+{
+  "name": "websocket-connection-stream",
+  "version": "0.0.1",
+  "description": "Thin stream wrapper around a WebSocket connection instance.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --check-leaks --reporter spec --bail --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claudijo/websocket-connection-stream.git"
+  },
+  "keywords": [
+    "stream",
+    "streamify",
+    "connection",
+    "websocket",
+    "websockets"
+  ],
+  "author": "Claudijo Borovic <hello@claudijo.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.4"
+  }
+}
