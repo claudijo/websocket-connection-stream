@@ -38,7 +38,7 @@ ws.addEventListener('close', function() {
 ```
 
 
-#### In Node (using the (ws)[https://github.com/websockets/ws] module)
+#### In Node (using the [ws](https://github.com/websockets/ws) module)
 
 ```js
 var WebSocketServer = require('ws').Server;
