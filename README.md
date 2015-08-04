@@ -1,7 +1,7 @@
 # Connection Stream
 
 Thin stream wrapper around a websocket connection (i.e. an object that has a
-send method for outgoing messages and that fires a `message` event with a `data`
+`send` method for outgoing messages and that fires a `message` event with a `data`
 property for incoming messages). Compatible with [ws](https://github.com/websockets/ws)
 connection instances and [native browser WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 connections.
@@ -15,14 +15,14 @@ by the user.
 Create a websocket connection stream and attach a open connection to the stream.
 
 Any life cycle events are handled outside the connection stream. For example
-attach a new WebSocket instance to reconnect after un unintentional
+attach a new WebSocket instance to reconnect after an unintentional
 disconnection.
 
 Do some stream plumbing.
 
 ### Examples
 
-#### Browser (using Browserify)
+#### In browser (using Browserify)
 
 ```js
 var connectionStream = require('websocket-connection-stream')();
@@ -34,7 +34,9 @@ getSomeReadableStreamSomehow().pipe(wsStream).pipe(getWritableStreamSomehow());
 ws.addEventListener('close', function() {
   // Possibly reconnect by creating a new websocket connection and attaching it
   // to existing connectionStream.
-})
+});
+```
+
 
 #### In Node (using the `ws` module)
 
