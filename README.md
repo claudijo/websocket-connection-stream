@@ -38,7 +38,7 @@ ws.addEventListener('close', function() {
 ```
 
 
-#### In Node (using the `ws` module)
+#### In Node (using the "ws" module)
 
 ```js
 var WebSocketServer = require('ws').Server;
