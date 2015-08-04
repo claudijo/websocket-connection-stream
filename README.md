@@ -1,4 +1,4 @@
-# Connection Stream
+# WebSocket Connection Stream
 
 Thin stream wrapper around a websocket connection (i.e. an object that has a
 `send` method for outgoing messages and that fires a `message` event with a `data`
