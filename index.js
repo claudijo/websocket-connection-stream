@@ -20,6 +20,8 @@ module.exports = function() {
 
     this.socket = socket;
     this.socket.addEventListener('message', messageListener);
+
+    return this;
   };
 
   stream._write = function(chunk, encoding, callback) {

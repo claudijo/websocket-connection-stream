@@ -46,6 +46,12 @@ var nodeWebsocketSuite = function() {
     expect(this.fakeConnection.removeListener.args[0][0]).to.be(this.fakeConnection.addEventListener.args[0][0]);
     expect(this.fakeConnection.removeListener.args[0][1]).to.be(this.fakeConnection.addEventListener.args[0][1]);
   });
+
+  it('should return stream when attaching socket', function() {
+    var streamingConnection = this.streamingConnection.attach(new helpers.FakeNodeWebSocketConnection());
+
+    expect(streamingConnection).to.be(this.streamingConnection);
+  });
 };
 
 var browserWebsocketSuite = function() {
