@@ -32,6 +32,10 @@ instance, which is a duplex stream.
 Attaches a websocket connection to the stream. Returns the websocket connection
 stream instance.
 
+### websocketConnectionStreamInstance.socket
+
+Property that holds underlying socket.
+
 ## Examples
 
 ### In browser (using Browserify)
