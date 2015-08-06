@@ -2,7 +2,7 @@ var Duplex = require('stream').Duplex;
 
 module.exports = function() {
   var stream = new Duplex();
-  var pendingWrite = null;
+  var pendingWriteFn = null;
 
   var isSocketOpen = function() {
     return stream.socket && stream.socket.readyState === 1;
@@ -19,10 +19,8 @@ module.exports = function() {
   };
 
   var openListener = function() {
-    if (pendingWrite) {
-      socketSend(pendingWrite.chunk, pendingWrite.callback);
-      pendingWrite = null;
-    }
+    pendingWriteFn && pendingWriteFn();
+    pendingWriteFn = null;
   };
 
   var socketSend = function(chunk, callback) {
@@ -65,7 +63,7 @@ module.exports = function() {
 
   stream._write = function(chunk, encoding, callback) {
     if (!isSocketOpen()) {
-      pendingWrite = { chunk: chunk, callback: callback };
+      pendingWriteFn = function() { socketSend(chunk, callback); };
       return;
     }
 
