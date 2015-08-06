@@ -34,7 +34,7 @@ stream instance.
 
 ### websocketConnectionStreamInstance.socket
 
-Property that holds underlying socket.
+Property that holds the underlying socket.
 
 ## Examples
 
