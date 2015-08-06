@@ -1,6 +1,11 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
+/**
+ * Base socket connection
+ * @constructor
+ */
+
 var FakeWebSocketConnectionBase = function() {
   this.readyState = FakeWebSocketConnectionBase.OPEN;
   this.emitter = new EventEmitter();
@@ -19,7 +24,15 @@ FakeWebSocketConnectionBase.prototype.emit = function(event, data) {
   this.emitter.emit.apply(this.emitter, arguments);
 };
 
-// Fake browser WebSocket connection
+FakeWebSocketConnectionBase.prototype._openSocket = function() {
+  this.readyState = FakeWebSocketConnectionBase.OPEN;
+  this.emitter.emit('open');
+};
+
+/**
+ * Fake browser WebSocket connection
+ * @constructor
+ */
 
 var FakeBrowserWebSocketConnection = function() {
   FakeWebSocketConnectionBase.call(this);
@@ -28,8 +41,8 @@ var FakeBrowserWebSocketConnection = function() {
 util.inherits(FakeBrowserWebSocketConnection, FakeWebSocketConnectionBase);
 
 FakeBrowserWebSocketConnection.prototype.send = function(data) {
-  if (this.readyState !== FakeWebSocketConnectionBase.OPEN) {
-    throw new Error('INVALID_ACCESS_ERROR');
+  if (this._shouldThrow) {
+    throw new Error('Socket error');
   }
 };
 
@@ -37,7 +50,11 @@ FakeBrowserWebSocketConnection.prototype.removeEventListener = function(event, l
   this.emitter.removeListener.apply(this.emitter, arguments);
 };
 
-// Fake node WebSocket connection
+/**
+ * Fake node WebSocket connection
+ * @constructor
+ */
+
 var FakeNodeWebSocketConnection = function() {
   FakeWebSocketConnectionBase.call(this);
 };
@@ -45,8 +62,8 @@ var FakeNodeWebSocketConnection = function() {
 util.inherits(FakeNodeWebSocketConnection, FakeWebSocketConnectionBase);
 
 FakeNodeWebSocketConnection.prototype.send = function(data, callback) {
-  if (this.readyState !== FakeWebSocketConnectionBase.OPEN) {
-    return callback(new Error('INVALID_ACCESS_ERROR'));
+  if (this._shouldThrow) {
+    return callback(new Error('Socket error'));
   }
 
   callback();

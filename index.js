@@ -2,9 +2,36 @@ var Duplex = require('stream').Duplex;
 
 module.exports = function() {
   var stream = new Duplex();
+  var pendingWrite = null;
 
   var messageListener = function(event) {
     stream.push(event.data);
+  };
+
+  var socketOpen = function() {
+    return stream.socket && stream.socket.readyState === 1;
+  };
+
+  var openListener = function() {
+    if (pendingWrite) {
+      socketSend(pendingWrite.chunk, pendingWrite.callback);
+      pendingWrite = null;
+    }
+  };
+
+  var socketSend = function(chunk, callback) {
+    if (stream.socket.send.length === 1) {
+      try {
+        stream.socket.send(chunk);
+      } catch (err) {
+        return callback(err);
+      }
+
+      callback();
+      return;
+    }
+
+    stream.socket.send(chunk, callback);
   };
 
   stream.socket = null;
@@ -13,29 +40,27 @@ module.exports = function() {
     if (this.socket) {
       if ('removeEventListener' in this.socket) {
         this.socket.removeEventListener('message', messageListener);
+        this.socket.removeEventListener('open', openListener);
       } else {
         this.socket.removeListener('message', messageListener);
+        this.socket.removeListener('open', openListener);
       }
     }
 
     this.socket = socket;
     this.socket.addEventListener('message', messageListener);
+    this.socket.addEventListener('open', openListener);
 
     return this;
   };
 
   stream._write = function(chunk, encoding, callback) {
-    if (this.socket.send.length === 1) {
-      try {
-        this.socket.send(chunk);
-      } catch (err) {
-        return callback(err);
-      }
-
+    if (!socketOpen()) {
+      pendingWrite = { chunk: chunk, callback: callback };
       return;
     }
 
-    this.socket.send(chunk, callback);
+    socketSend(chunk, callback);
   };
 
   stream._read = function(size) {};

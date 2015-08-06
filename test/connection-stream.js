@@ -4,13 +4,12 @@ var connectionStream = require('..');
 var helpers = require('./helpers');
 
 var commonSuite = function() {
-  it('should send outgoing message', function(done) {
+  it('should send outgoing messages', function() {
     this.streamingConnection.write('hello');
+    this.streamingConnection.write('world');
 
-    setTimeout(function() {
-      expect(this.fakeConnection.send.args[0][0]).to.eql(new Buffer('hello'));
-      done();
-    }.bind(this), 0);
+    expect(this.fakeConnection.send.args[0][0]).to.eql(new Buffer('hello'));
+    expect(this.fakeConnection.send.args[1][0]).to.eql(new Buffer('world'));
   });
 
   it('should push incoming messages', function(done) {
@@ -27,15 +26,33 @@ var commonSuite = function() {
     expect(this.streamingConnection.socket).to.be(this.fakeConnection);
   });
 
-  it('should emit error event if sending is unsuccessful', function(done) {
+  it('should emit error event if sending is erroneous', function(done) {
     this.streamingConnection.on('error', function(err) {
       expect(err).to.be.an(Error);
       done();
     });
 
+    this.fakeConnection._shouldThrow = true;
+
+    this.streamingConnection.write('hello');
+  });
+
+  it('should not send if socket is not open', function() {
+    this.fakeConnection.readyState = this.fakeConnection.CLOSED;
+    this.streamingConnection.write('hello');
+    expect(this.fakeConnection.send.callCount).to.be(0);
+  });
+
+  it('it should send pending messages when socket opens', function() {
     this.fakeConnection.readyState = this.fakeConnection.CLOSED;
 
     this.streamingConnection.write('hello');
+    this.streamingConnection.write('world');
+
+    this.fakeConnection._openSocket();
+
+    expect(this.fakeConnection.send.args[0][0]).to.eql(new Buffer('hello'));
+    expect(this.fakeConnection.send.args[1][0]).to.eql(new Buffer('world'));
   });
 };
 
@@ -45,6 +62,13 @@ var nodeWebsocketSuite = function() {
 
     expect(this.fakeConnection.removeListener.args[0][0]).to.be(this.fakeConnection.addEventListener.args[0][0]);
     expect(this.fakeConnection.removeListener.args[0][1]).to.be(this.fakeConnection.addEventListener.args[0][1]);
+  });
+
+  it('should remove open listener from old socket when attaching new socket', function() {
+    this.streamingConnection.attach(new helpers.FakeNodeWebSocketConnection());
+
+    expect(this.fakeConnection.removeListener.args[1][0]).to.be(this.fakeConnection.addEventListener.args[1][0]);
+    expect(this.fakeConnection.removeListener.args[1][1]).to.be(this.fakeConnection.addEventListener.args[1][1]);
   });
 
   it('should return stream when attaching socket', function() {
@@ -60,6 +84,19 @@ var browserWebsocketSuite = function() {
 
     expect(this.fakeConnection.removeEventListener.args[0][0]).to.be(this.fakeConnection.addEventListener.args[0][0]);
     expect(this.fakeConnection.removeEventListener.args[0][1]).to.be(this.fakeConnection.addEventListener.args[0][1]);
+  });
+
+  it('should remove open listener from old socket when attaching new socket', function() {
+    this.streamingConnection.attach(new helpers.FakeNodeWebSocketConnection());
+
+    expect(this.fakeConnection.removeEventListener.args[1][0]).to.be(this.fakeConnection.addEventListener.args[1][0]);
+    expect(this.fakeConnection.removeEventListener.args[1][1]).to.be(this.fakeConnection.addEventListener.args[1][1]);
+  });
+
+  it('should return stream when attaching socket', function() {
+    var streamingConnection = this.streamingConnection.attach(new helpers.FakeBrowserWebSocketConnection());
+
+    expect(streamingConnection).to.be(this.streamingConnection);
   });
 };
 
