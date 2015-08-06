@@ -6,10 +6,11 @@ property for incoming messages). Compatible with [ws](https://github.com/websock
 connection instances and [native browser WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 connections.
 
-The module will enqueue incoming data until the underlying websocket is open.
+The module will enqueue incoming data until the provided underlying websocket is
+open.
 
 Error handling and life cycle management in general (creating, closing,
-reconnecting etc) for the connection is _not_ handled by the module, and should
+reconnecting etc) for the connection are _not_ handled by the module, and should
 instead be handled by the user.
 
 ## Usage
