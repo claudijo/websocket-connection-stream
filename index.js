@@ -14,7 +14,7 @@ module.exports = function() {
     stream.push(data);
   };
 
-  var socketOpen = function() {
+  var isSocketOpen = function() {
     return stream.socket && stream.socket.readyState === 1;
   };
 
@@ -65,7 +65,7 @@ module.exports = function() {
   };
 
   stream._write = function(chunk, encoding, callback) {
-    if (!socketOpen()) {
+    if (!isSocketOpen()) {
       pendingWrite = { chunk: chunk, callback: callback };
       return;
     }
