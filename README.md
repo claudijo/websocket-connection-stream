@@ -9,7 +9,7 @@ connections.
 The module will enqueue incoming data until the underlying websocket is open.
 
 Error handling and life cycle management in general (creating, closing,
-reconnecting etc) for the connection is not handled by the module, and should
+reconnecting etc) for the connection is _not_ handled by the module, and should
 instead be handled by the user.
 
 ## Usage
