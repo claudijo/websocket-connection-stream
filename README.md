@@ -18,7 +18,8 @@ the line.
 
 ## Usage
 
-Create a websocket connection stream and attach a open connection to the stream.
+Create a websocket connection stream and attach a websocket connection to the
+stream.
 
 Any life cycle events are handled outside the connection stream. For example
 attach a new WebSocket instance to reconnect after an unintentional
