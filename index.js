@@ -4,6 +4,10 @@ module.exports = function() {
   var stream = new Duplex();
   var pendingWrite = null;
 
+  var isSocketOpen = function() {
+    return stream.socket && stream.socket.readyState === 1;
+  };
+
   var messageListener = function(event) {
     var data = event.data;
 
@@ -12,10 +16,6 @@ module.exports = function() {
     }
 
     stream.push(data);
-  };
-
-  var isSocketOpen = function() {
-    return stream.socket && stream.socket.readyState === 1;
   };
 
   var openListener = function() {
