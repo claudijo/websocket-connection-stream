@@ -36,6 +36,8 @@ FakeWebSocketConnectionBase.prototype._openSocket = function() {
 
 var FakeBrowserWebSocketConnection = function() {
   FakeWebSocketConnectionBase.call(this);
+
+  this.binaryType = "blob";
 };
 
 util.inherits(FakeBrowserWebSocketConnection, FakeWebSocketConnectionBase);

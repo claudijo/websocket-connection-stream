@@ -5,7 +5,13 @@ module.exports = function() {
   var pendingWrite = null;
 
   var messageListener = function(event) {
-    stream.push(event.data);
+    var data = event.data;
+
+    if (data instanceof ArrayBuffer) {
+      data = new Buffer(new Uint8Array(data));
+    }
+
+    stream.push(data);
   };
 
   var socketOpen = function() {
@@ -50,6 +56,10 @@ module.exports = function() {
     this.socket = socket;
     this.socket.addEventListener('message', messageListener);
     this.socket.addEventListener('open', openListener);
+
+    if (this.socket.binaryType === 'blob') {
+      this.socket.binaryType = 'arraybuffer';
+    }
 
     return this;
   };

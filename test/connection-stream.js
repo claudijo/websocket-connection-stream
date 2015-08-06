@@ -12,7 +12,7 @@ var commonSuite = function() {
     expect(this.fakeConnection.send.args[1][0]).to.eql(new Buffer('world'));
   });
 
-  it('should push incoming messages', function(done) {
+  it('should handle incoming messages of Buffer type', function(done) {
     this.streamingConnection.on('readable', function() {
       var chunk = this.read();
       expect(chunk.toString()).to.be('hello');
@@ -20,6 +20,25 @@ var commonSuite = function() {
     });
 
     this.fakeConnection.emit('message', { data: new Buffer('hello') });
+  });
+
+  it('should handle incoming messages of ArrayBuffer type', function(done) {
+    var message = 'hello';
+
+    var arrBuff = new ArrayBuffer(message.length);
+    var arrBuffView = new Uint8Array(arrBuff);
+
+    for (var i = 0; i < message.length; i++) {
+      arrBuffView[i] = message.charCodeAt(i);
+    }
+
+    this.streamingConnection.on('readable', function() {
+      var chunk = this.read();
+      expect(chunk.toString()).to.be(message);
+      done();
+    });
+
+    this.fakeConnection.emit('message', { data: arrBuff });
   });
 
   it('should expose websocket instance', function() {
@@ -33,7 +52,6 @@ var commonSuite = function() {
     });
 
     this.fakeConnection._shouldThrow = true;
-
     this.streamingConnection.write('hello');
   });
 
@@ -97,6 +115,10 @@ var browserWebsocketSuite = function() {
     var streamingConnection = this.streamingConnection.attach(new helpers.FakeBrowserWebSocketConnection());
 
     expect(streamingConnection).to.be(this.streamingConnection);
+  });
+
+  it('should set connection binary type to arraybuffer', function() {
+    expect(this.fakeConnection.binaryType).to.be('arraybuffer');
   });
 };
 
