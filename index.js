@@ -33,8 +33,7 @@ module.exports = function() {
         return callback(err);
       }
 
-      callback();
-      return;
+      return callback();
     }
 
     stream.socket.send(chunk, callback);
