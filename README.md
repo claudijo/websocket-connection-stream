@@ -6,9 +6,11 @@ property for incoming messages). Compatible with [ws](https://github.com/websock
 connection instances and [native browser WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 connections.
 
-Error handling and life cycle management (opening, closing, reconnecting etc)
-for the connection is not handled by the module, and should instead be handled
-by the user.
+The module will enqueue incoming data until the underlying websocket is open.
+
+Error handling and life cycle management in general (creating, closing,
+reconnecting etc) for the connection is not handled by the module, and should
+instead be handled by the user.
 
 ## Usage
 
@@ -20,14 +22,24 @@ disconnection.
 
 Do some stream plumbing.
 
-### Examples
+### require('websocket-connection-stream')
 
-#### In browser (using Browserify)
+Module exports a factory function that returns a websocket connection stream
+instance, which is a duplex stream.
+
+### websocketConnectionStreamInstance.attach(websocketConnection)
+
+Attaches a websocket connection to the stream. Returns the websocket connection
+stream instance.
+
+## Examples
+
+### In browser (using Browserify)
 
 ```js
-var connectionStream = require('websocket-connection-stream')();
+var websocketConnectionStream = require('websocket-connection-stream');
 var ws = new WebSocket('ws://ws.example.org');
-var wsStream = connectionStream.attach(ws);
+var wsStream = websocketConnectionStream().attach(ws);
 
 getSomeReadableStreamSomehow().pipe(wsStream).pipe(getWritableStreamSomehow());
 
@@ -38,7 +50,7 @@ ws.addEventListener('close', function() {
 ```
 
 
-#### In Node (using the [ws](https://github.com/websockets/ws) module)
+### In Node (using the [ws](https://github.com/websockets/ws) module)
 
 ```js
 var WebSocketServer = require('ws').Server;
