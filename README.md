@@ -11,10 +11,10 @@ open.
 Error handling and life cycle management in general (creating, closing,
 reconnecting etc) for the connection are _not_ handled by the module, and should
 instead be handled by the user. The main exception to this is that the module
-will listen to the provided socket's `open` event and enqueue messages until the
-socket is open.
+will listen to the provided socket's `open` event and enqueue messages until a
+closed socket is opened.
 
-This for instance enables the possibility to reconnect a unintentionally lost
+This for instance enables the possibility to reconnect an unintentionally lost
 connection to a server, by attaching a new websocket, without closing the stream
 and disrupting any stream plumbing down the line.
 
