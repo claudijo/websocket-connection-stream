@@ -1,4 +1,4 @@
-# WebSocket Connection Stream
+# Websocket Connection Stream
 
 Thin stream wrapper around a websocket connection. Compatible with
 [ws](https://github.com/websockets/ws) connection instances and
