@@ -29,7 +29,7 @@ npm install websocket-connection-stream
 * Create a websocket connection stream and attach a websocket connection to the
 stream.
 * Do some stream plumbing.
-* Handle life cycle events outside the connection stream.
+* Handle life cycle events outside the websocket connection stream.
 
 ### websocketConnectionStream()
 
