@@ -49,7 +49,7 @@ Property that holds the underlying websocket connection.
 
 ## Examples
 
-### In browser (using Browserify)
+### In browser (using [Browserify](https://github.com/substack/node-browserify))
 
 ```js
 var ws = new WebSocket('ws://ws.example.org');
