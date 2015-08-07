@@ -7,14 +7,14 @@ var EventEmitter = require('events').EventEmitter;
  */
 
 var FakeWebSocketConnectionBase = function() {
-  this.readyState = FakeWebSocketConnectionBase.OPEN;
+  this.CONNECTING = 0;
+  this.OPEN = 1;
+  this.CLOSING = 2;
+  this.CLOSED = 3;
+
+  this.readyState = this.OPEN;
   this.emitter = new EventEmitter();
 };
-
-FakeWebSocketConnectionBase.CONNECTING = 0;
-FakeWebSocketConnectionBase.OPEN = 1;
-FakeWebSocketConnectionBase.CLOSING = 2;
-FakeWebSocketConnectionBase.CLOSED = 3;
 
 FakeWebSocketConnectionBase.prototype.addEventListener = function(event, listener) {
   this.emitter.on.apply(this.emitter, arguments);
@@ -25,7 +25,7 @@ FakeWebSocketConnectionBase.prototype.emit = function(event, data) {
 };
 
 FakeWebSocketConnectionBase.prototype._openSocket = function() {
-  this.readyState = FakeWebSocketConnectionBase.OPEN;
+  this.readyState = this.OPEN;
   this.emitter.emit('open');
 };
 

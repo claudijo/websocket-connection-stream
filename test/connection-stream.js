@@ -98,14 +98,14 @@ var nodeWebsocketSuite = function() {
 
 var browserWebsocketSuite = function() {
   it('should remove message listener from old socket when attaching new socket', function() {
-    this.streamingConnection.attach(new helpers.FakeNodeWebSocketConnection());
+    this.streamingConnection.attach(new helpers.FakeBrowserWebSocketConnection());
 
     expect(this.fakeConnection.removeEventListener.args[0][0]).to.be(this.fakeConnection.addEventListener.args[0][0]);
     expect(this.fakeConnection.removeEventListener.args[0][1]).to.be(this.fakeConnection.addEventListener.args[0][1]);
   });
 
   it('should remove open listener from old socket when attaching new socket', function() {
-    this.streamingConnection.attach(new helpers.FakeNodeWebSocketConnection());
+    this.streamingConnection.attach(new helpers.FakeBrowserWebSocketConnection());
 
     expect(this.fakeConnection.removeEventListener.args[1][0]).to.be(this.fakeConnection.addEventListener.args[1][0]);
     expect(this.fakeConnection.removeEventListener.args[1][1]).to.be(this.fakeConnection.addEventListener.args[1][1]);
@@ -119,6 +119,21 @@ var browserWebsocketSuite = function() {
 
   it('should set connection binary type to arraybuffer', function() {
     expect(this.fakeConnection.binaryType).to.be('arraybuffer');
+  });
+
+  it('should sending pending messages when attaching already open socket', function() {
+    var alreadyOpenSocket = new helpers.FakeNodeWebSocketConnection();
+    sinon.spy(alreadyOpenSocket, 'send');
+
+    this.fakeConnection.readyState = this.fakeConnection.CLOSED;
+
+    this.streamingConnection.write('hello');
+    this.streamingConnection.write('world');
+
+    this.streamingConnection.attach(alreadyOpenSocket);
+
+    expect(alreadyOpenSocket.send.args[0][0]).to.eql(new Buffer('hello'));
+    expect(alreadyOpenSocket.send.args[1][0]).to.eql(new Buffer('world'));
   });
 };
 

@@ -5,7 +5,16 @@ module.exports = function() {
   var pendingWriteFn = null;
 
   var isSocketOpen = function() {
-    return stream.socket && stream.socket.readyState === 1;
+    return (stream.socket && (stream.socket.readyState === stream.socket.OPEN));
+  };
+
+  var removeEventListener = function(target, event, listener) {
+    if ('removeEventListener' in target) {
+      target.removeEventListener(event, listener);
+      return
+    }
+
+    target.removeListener(event, listener);
   };
 
   var messageListener = function(event) {
@@ -41,21 +50,21 @@ module.exports = function() {
 
   stream.attach = function(socket) {
     if (this.socket) {
-      if ('removeEventListener' in this.socket) {
-        this.socket.removeEventListener('message', messageListener);
-        this.socket.removeEventListener('open', openListener);
-      } else {
-        this.socket.removeListener('message', messageListener);
-        this.socket.removeListener('open', openListener);
-      }
+      removeEventListener(this.socket, 'message', messageListener);
+      removeEventListener(this.socket, 'open', openListener);
     }
 
     this.socket = socket;
-    this.socket.addEventListener('message', messageListener);
-    this.socket.addEventListener('open', openListener);
 
     if (this.socket.binaryType === 'blob') {
       this.socket.binaryType = 'arraybuffer';
+    }
+
+    this.socket.addEventListener('message', messageListener);
+    this.socket.addEventListener('open', openListener);
+
+    if (this.socket.readyState === this.socket.OPEN) {
+      openListener();
     }
 
     return this;
