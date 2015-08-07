@@ -60,7 +60,7 @@ getSomeReadableStreamSomehow().pipe(wsStream).pipe(getWritableStreamSomehow());
 
 ws.addEventListener('close', function() {
   // Possibly reconnect by creating a new websocket connection and attaching it
-  // to existing connectionStream.
+  // to existing websocket connection stream.
 });
 ```
 
