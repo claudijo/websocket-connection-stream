@@ -54,8 +54,7 @@ Property that holds the underlying websocket connection.
 ```js
 var ws = new WebSocket('ws://ws.example.org');
 
-var websocketConnectionStream = require('websocket-connection-stream');
-var wsStream = websocketConnectionStream().attach(ws);
+var wsStream = require('websocket-connection-stream')().attach(ws);
 
 getSomeReadableStreamSomehow().pipe(wsStream).pipe(getWritableStreamSomehow());
 
@@ -72,8 +71,7 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
-  var connectionStream = require('websocket-connection-stream');
-  var wsStream = connectionStream.attach(ws);
+  var wsStream = require('websocket-connection-stream')().attach(ws);
 
   getSomeReadableStreamSomehow().pipe(wsStream).pipe(getWritableStreamSomehow());
 
