@@ -15,8 +15,8 @@ will listen to the provided socket's `open` event and enqueue messages until a
 closed socket is opened.
 
 This for instance enables the possibility to reconnect an unintentionally lost
-connection to a server, by attaching a new websocket, without closing the stream
-and disrupting any stream plumbing down the line.
+connection to a server, by attaching a new websocket, without automatically
+ending the stream and disrupting any stream plumbing down the line.
 
 ## Install
 
